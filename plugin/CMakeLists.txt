@@ -17,6 +17,7 @@ juce_add_plugin(${PROJECT_NAME}
     PLUGIN_CODE YT2A # change this
     FORMATS Standalone VST3 # may change this
     PRODUCT_NAME "YouTube2Ableton" # change this
+    NEEDS_WEB_BROWSER TRUE
 )
 
 # Sets the source files of the plugin project.
