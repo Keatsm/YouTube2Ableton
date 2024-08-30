@@ -22,7 +22,7 @@ void AudioPluginAudioProcessorEditor::paint(juce::Graphics& g)
     g.fillAll(juce::Colours::black);
     g.setColour(juce::Colours::white);
     g.setFont(15.0f);
-    g.drawFittedText("Web Browser Plugin", getLocalBounds(), juce::Justification::centred, 1);
+    g.drawFittedText("Youtube2Ableton", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void AudioPluginAudioProcessorEditor::resized()
