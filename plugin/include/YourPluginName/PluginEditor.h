@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PluginProcessor.h"
+#include <Python.h>
 
 namespace audio_plugin {
 
@@ -19,6 +20,8 @@ private:
 
   juce::WebBrowserComponent webBrowserComponent;
   juce::TextButton downloadButton { "Import Video" };
+
+  PyObject *ytDlpModule = nullptr;
 
   auto downloadAudio() -> void;
 

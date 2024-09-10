@@ -1,26 +1,17 @@
-
 # Mandatory line, sets the minimum version of CMake that should be used with this repository.
-# I specified 3.22 because I trust it. However, currently I have 3.26 installed on my machine.
-# To verify your version run
-# $ cmake --version
 cmake_minimum_required(VERSION 3.22)
 
 # Sets a few variables, like PROJECT_NAME
 project(YouTube2Ableton)
 
 # Always use the newest C++ standard on green-field projects if possible.
-# Currently, JUCE supports only C++ 20 cross-platform.
 set(CMAKE_CXX_STANDARD 20)
 
-# I like to download the dependencies to the same folder as the project.
-# If you want to install them system wide, set CPM_SOURCE_CACHE with the path to the dependencies
-# either as an environment variable or pass it to the cmake script with -DCPM_SOURCE_CACHE=<path>.
+# Download dependencies
 set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs)
 
-# Downloads CPM if not already downloaded. CPM is an easy-to-use package manager nicely integrated with CMake.
 include(cmake/cpm.cmake)
 
-# This commands downloads AND configures JUCE. It sets up some variables, like JUCE_SOURCE_DIR.
 CPMAddPackage(
     NAME JUCE
     GIT_TAG 8.0.1
@@ -29,23 +20,29 @@ CPMAddPackage(
     SOURCE_DIR ${LIB_DIR}/juce
 )
 
-# Adds googletest.
-CPMAddPackage(
-    NAME GOOGLETEST
-    GITHUB_REPOSITORY google/googletest
-    GIT_TAG v1.15.2
-    VERSION 1.15.2
-    SOURCE_DIR ${LIB_DIR}/googletest
-    OPTIONS
-        "INSTALL_GTEST OFF"
-        "gtest_force_shared_crt ON"
-)
+# Find Python interpreter, libraries, and header files
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
-# This command allows running tests from the "build" folder (the one where CMake generates the project to).
-enable_testing()
+# Include Python headers
+include_directories(${Python3_INCLUDE_DIRS})
 
-# Adds all the targets configured in the "plugin" folder.
+# Add subdirectories
 add_subdirectory(plugin)
 
-# Adds all the targets configured in the "test" folder.
-add_subdirectory(test)
+# Link Python libraries to MyPlugin after the target is created
+target_link_libraries(AudioPlugin PRIVATE Python3::Python)
+
+# Set the path to custom CMake modules
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+# Find FFmpeg
+find_package(FFmpeg REQUIRED)
+
+# Link FFmpeg libraries
+target_link_libraries(AudioPlugin PRIVATE ${FFMPEG_LIBRARIES})
+
+# Optionally pass the path to ffmpeg and ffprobe to your application
+target_compile_definitions(AudioPlugin PRIVATE 
+    FFMPEG_EXECUTABLE="${FFMPEG_EXECUTABLE}"
+    FFPROBE_EXECUTABLE="${FFPROBE_EXECUTABLE}"
+)

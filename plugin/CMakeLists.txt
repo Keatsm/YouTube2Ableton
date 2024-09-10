@@ -40,12 +40,13 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         juce::juce_audio_utils
+        juce::juce_gui_basics
+        juce::juce_gui_extra
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
-        juce::juce_gui_basics
-        juce::juce_gui_extra
+        
 )
 
 # These definitions are recommended by JUCE.
